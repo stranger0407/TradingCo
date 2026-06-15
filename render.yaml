@@ -14,12 +14,17 @@ services:
       - key: SPRING_DATASOURCE_PASSWORD
         sync: false # Paste: npg_8qufKUTMI7lQ
       - key: SPRING_REDIS_HOST
-        sync: false # Paste host of tradingco-redis-t9vu
+        value: tradingco-redis
       - key: SPRING_REDIS_PORT
-        sync: false # Paste port of tradingco-redis-t9vu
-      - key: SPRING_REDIS_PASSWORD
-        sync: false # Paste password of tradingco-redis-t9vu
+        value: "6379"
       - key: JWT_SECRET
         generateValue: true
+
+  # Redis Service
+  - type: redis
+    name: tradingco-redis
+    plan: free
+    ipAllowList: [] # only allow internal access
+
 
 
