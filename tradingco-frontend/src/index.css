@@ -107,7 +107,6 @@ html, body, #root {
   background-color: var(--bg-primary);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  overflow: hidden;
 }
 
 /* === Scrollbar === */

@@ -1,13 +1,12 @@
 .page {
-  height: 100vh;
+  min-height: 100vh;
   display: flex;
-  flex-direction: column;
   align-items: center;
+  justify-content: center;
   background: linear-gradient(135deg, #0D1117 0%, #161B22 50%, #1C2333 100%);
   position: relative;
-  overflow-y: auto;
-  overflow-x: hidden;
   padding: var(--space-2xl) var(--space-md);
+  box-sizing: border-box;
 }
 
 .page::before {
@@ -23,7 +22,6 @@
 }
 
 .card {
-  margin: auto;
   background: var(--bg-secondary);
   border: 1px solid var(--border);
   border-radius: var(--radius-xl);
@@ -32,6 +30,7 @@
   max-width: 420px;
   position: relative;
   box-shadow: var(--shadow-lg), 0 0 60px rgba(88, 166, 255, 0.05);
+  box-sizing: border-box;
 }
 
 .logo {
