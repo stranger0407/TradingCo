@@ -1,12 +1,14 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useAuthStore from '../../../store/useAuthStore';
+import useSettingsStore from '../../../store/useSettingsStore';
 import styles from './Header.module.css';
 
 export default function Header() {
   const [searchQuery, setSearchQuery] = useState('');
   const user = useAuthStore((s) => s.user);
   const logout = useAuthStore((s) => s.logout);
+  const toggleSidebar = useSettingsStore((s) => s.toggleSidebar);
   const navigate = useNavigate();
 
   const handleSearch = (e) => {
@@ -23,6 +25,9 @@ export default function Header() {
 
   return (
     <header className={styles.header}>
+      <button className={styles.menuBtn} onClick={toggleSidebar} aria-label="Toggle Sidebar">
+        ☰
+      </button>
       <div className={styles.logo}>
         📈 Trading<span>Co</span>
       </div>

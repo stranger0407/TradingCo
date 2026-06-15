@@ -21,6 +21,14 @@ export default function Sidebar() {
   const navigate = useNavigate();
   const expanded = useSettingsStore((s) => s.sidebarExpanded);
   const toggleSidebar = useSettingsStore((s) => s.toggleSidebar);
+  const setSidebarExpanded = useSettingsStore((s) => s.setSidebarExpanded);
+
+  const handleNavClick = (path) => {
+    navigate(path);
+    if (window.innerWidth <= 768) {
+      setSidebarExpanded(false);
+    }
+  };
 
   return (
     <aside className={`${styles.sidebar} ${expanded ? styles.expanded : ''}`}>
@@ -32,7 +40,7 @@ export default function Sidebar() {
           <button
             key={path}
             className={`${styles.navItem} ${location.pathname.startsWith(path) ? styles.active : ''}`}
-            onClick={() => navigate(path)}
+            onClick={() => handleNavClick(path)}
             title={!expanded ? label : undefined}
           >
             <span className={styles.navIcon}>{icon}</span>

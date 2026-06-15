@@ -102,3 +102,33 @@
   font-size: var(--text-sm);
   cursor: pointer;
 }
+
+.menuBtn {
+  display: none;
+  background: none;
+  border: none;
+  color: var(--text-primary);
+  font-size: var(--text-xl);
+  cursor: pointer;
+  padding: var(--space-sm);
+  margin-right: var(--space-sm);
+}
+
+@media (max-width: 768px) {
+  .menuBtn {
+    display: block;
+  }
+  .logo {
+    margin-right: var(--space-sm);
+    font-size: var(--text-base);
+  }
+  .searchWrapper {
+    max-width: 180px;
+  }
+  .marketStatus {
+    display: none;
+  }
+  .actions {
+    gap: var(--space-sm);
+  }
+}

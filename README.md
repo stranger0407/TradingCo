@@ -35,29 +35,50 @@ A production-grade mock trading platform that simulates real brokerage experienc
 
 ### Prerequisites
 - Java 21+
-- Node.js 18+
-- Docker & Docker Compose (for PostgreSQL + Redis)
+- Node.js 20+
+- Docker & Docker Compose
 
-### 1. Start Database Services
-```bash
-docker-compose up -d
-```
+---
 
-### 2. Start Backend
-```bash
-cd tradingco-backend
-./mvnw spring-boot:run
-```
-Backend runs at: http://localhost:8080
-Swagger UI: http://localhost:8080/swagger-ui.html
+### Option A: Full Stack Docker Compose (Recommended)
+You can run the entire application, including databases, backend, and frontend, with a single command:
 
-### 3. Start Frontend
-```bash
-cd tradingco-frontend
-npm install
-npm run dev
-```
-Frontend runs at: http://localhost:5173
+1. **Build and start all services**:
+   ```bash
+   docker-compose up --build -d
+   ```
+2. **Access the application**:
+   - **Frontend Dashboard**: [http://localhost:3000](http://localhost:3000)
+   - **Backend API**: [http://localhost:8080](http://localhost:8080)
+   - **API Documentation (Swagger)**: [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)
+3. **Shutdown**:
+   ```bash
+   docker-compose down
+   ```
+
+---
+
+### Option B: Local Development
+If you want to run services individually for hot-reloading:
+
+1. **Start the database and cache in the background**:
+   ```bash
+   docker-compose up postgres redis -d
+   ```
+2. **Run the Spring Boot backend**:
+   ```bash
+   cd tradingco-backend
+   ./mvnw spring-boot:run
+   ```
+   *Runs at: http://localhost:8080*
+
+3. **Run the React frontend**:
+   ```bash
+   cd tradingco-frontend
+   npm install
+   npm run dev
+   ```
+   *Runs at: http://localhost:5173*
 
 ## Project Structure
 

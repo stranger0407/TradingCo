@@ -124,8 +124,22 @@
 @media (max-width: 1200px) {
   .dashboard {
     grid-template-columns: 1fr;
-    grid-template-rows: auto auto auto auto;
+    grid-template-rows: auto;
     height: auto;
+    overflow-y: auto;
   }
-  .bottomArea { grid-template-columns: 1fr; }
+  .watchlistPanel {
+    grid-row: auto;
+  }
+  .chartArea {
+    grid-row: auto;
+  }
+  .orderPanel {
+    grid-row: auto;
+  }
+  .bottomArea {
+    grid-column: auto;
+    grid-template-columns: 1fr;
+    max-height: none;
+  }
 }

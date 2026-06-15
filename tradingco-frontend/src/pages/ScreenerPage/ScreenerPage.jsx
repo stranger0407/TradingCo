@@ -2,21 +2,64 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { screenerApi } from '../../api/screenerApi';
 import { formatCurrency, formatPercent, formatVolume, getPnlClass } from '../../utils/formatters';
+import styles from './ScreenerPage.module.css';
+
+function ScreenerTableSkeleton({ showRank = true }) {
+  return (
+    <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+      <thead>
+        <tr>
+          {(showRank ? ['#'] : []).concat(['Symbol', 'Price', 'Change', 'Volume']).map(h => (
+            <th key={h} style={{ 
+              padding: 'var(--space-sm) var(--space-md)', 
+              textAlign: h === 'Symbol' || h === '#' ? 'left' : 'right', 
+              fontSize: 'var(--text-xs)', 
+              color: 'var(--text-muted)', 
+              fontWeight: 600, 
+              borderBottom: '1px solid var(--border)' 
+            }}>
+              {h}
+            </th>
+          ))}
+        </tr>
+      </thead>
+      <tbody>
+        {[1, 2, 3, 4, 5].map((idx) => (
+          <tr key={idx}>
+            {showRank && (
+              <td style={{ padding: 'var(--space-sm) var(--space-md)' }}>
+                <div className="skeleton" style={{ width: '12px', height: '14px' }} />
+              </td>
+            )}
+            <td style={{ padding: 'var(--space-sm) var(--space-md)' }}>
+              <div className="skeleton" style={{ width: '45px', height: '14px' }} />
+            </td>
+            <td style={{ padding: 'var(--space-sm) var(--space-md)' }}>
+              <div className="skeleton" style={{ width: '55px', height: '14px', marginLeft: 'auto' }} />
+            </td>
+            <td style={{ padding: 'var(--space-sm) var(--space-md)' }}>
+              <div className="skeleton" style={{ width: '45px', height: '14px', marginLeft: 'auto' }} />
+            </td>
+            <td style={{ padding: 'var(--space-sm) var(--space-md)' }}>
+              <div className="skeleton" style={{ width: '60px', height: '14px', marginLeft: 'auto' }} />
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
+}
 
 function ScreenerTable({ items, isLoading, showRank = true }) {
   const navigate = useNavigate();
 
   if (isLoading) {
-    return (
-      <div style={{ padding: 'var(--space-xl)', textAlignment: 'center', color: 'var(--text-secondary)' }}>
-        Loading screener data...
-      </div>
-    );
+    return <ScreenerTableSkeleton showRank={showRank} />;
   }
 
   if (!items || items.length === 0) {
     return (
-      <div style={{ padding: 'var(--space-xl)', textAlignment: 'center', color: 'var(--text-secondary)' }}>
+      <div className={styles.emptyContainer}>
         No data available
       </div>
     );
@@ -116,29 +159,29 @@ export default function ScreenerPage() {
   }, []);
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-lg)', animation: 'fadeIn 300ms ease-out' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+    <div className={styles.screenerContainer}>
+      <div className={styles.titleRow}>
         <h1 style={{ fontSize: 'var(--text-xl)', fontWeight: 700 }}>🔍 Market Screener</h1>
-        <button onClick={fetchData} className="btn-secondary" style={{ padding: '6px 12px', fontSize: 'var(--text-xs)' }}>
-          🔄 Refresh
+        <button onClick={fetchData} className="btn-outline" style={{ padding: '6px 12px', fontSize: 'var(--text-xs)' }} disabled={isLoading}>
+          {isLoading ? 'Loading...' : '🔄 Refresh'}
         </button>
       </div>
 
       {error && (
-        <div style={{ padding: 'var(--space-md)', background: 'rgba(248, 81, 73, 0.1)', border: '1px solid var(--loss-red)', color: 'var(--loss-red)', borderRadius: 'var(--radius-sm)' }}>
+        <div className={styles.errorMsg}>
           {error}
         </div>
       )}
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 'var(--space-lg)' }}>
+      <div className={styles.grid}>
         {[
           { key: 'gainers', icon: '🟢', title: 'Top Gainers', data: gainers },
           { key: 'losers', icon: '🔴', title: 'Top Losers', data: losers },
           { key: 'active', icon: '🔥', title: 'Most Active', data: active },
         ].map(({ key, icon, title, data }) => (
           <div key={key} className="card">
-            <div style={{ padding: 'var(--space-md) var(--space-lg)', borderBottom: '1px solid var(--border)' }}>
-              <h3 style={{ fontSize: 'var(--text-sm)', fontWeight: 600, color: 'var(--text-secondary)', textTransform: 'uppercase' }}>
+            <div className={styles.cardHeader}>
+              <h3 className={styles.cardTitle}>
                 {icon} {title}
               </h3>
             </div>

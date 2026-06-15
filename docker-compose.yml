@@ -1,4 +1,5 @@
 version: '3.8'
+
 services:
   postgres:
     image: postgres:16-alpine
@@ -12,7 +13,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U tradingco"]
+      test: ["CMD-SHELL", "pg_isready -U tradingco -d tradingco"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -27,6 +28,36 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+
+  backend:
+    build:
+      context: ./tradingco-backend
+      dockerfile: Dockerfile
+    container_name: tradingco-backend
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/tradingco
+      - SPRING_DATASOURCE_USERNAME=tradingco
+      - SPRING_DATASOURCE_PASSWORD=tradingco_dev
+      - SPRING_REDIS_HOST=redis
+      - SPRING_REDIS_PORT=6379
+      - JWT_SECRET=super-secret-key-that-is-long-enough-for-hmac-sha-256-which-requires-at-least-256-bits
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: ./tradingco-frontend
+      dockerfile: Dockerfile
+    container_name: tradingco-frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
 
 volumes:
   postgres_data:

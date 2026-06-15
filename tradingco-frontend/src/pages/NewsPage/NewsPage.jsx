@@ -1,5 +1,33 @@
 import { useState, useEffect } from 'react';
 import { newsApi } from '../../api/newsApi';
+import styles from './NewsPage.module.css';
+
+function NewsCardSkeleton() {
+  return (
+    <div className="card" style={{ padding: 'var(--space-lg)' }}>
+      <div style={{ display: 'flex', gap: 'var(--space-md)', marginBottom: 'var(--space-sm)' }}>
+        <div className="skeleton" style={{ width: '60px', height: '18px' }} />
+        <div className="skeleton" style={{ width: '80px', height: '18px' }} />
+        <div className="skeleton" style={{ marginLeft: 'auto', width: '120px', height: '14px' }} />
+      </div>
+      <div className="skeleton" style={{ width: '85%', height: '20px', marginBottom: 'var(--space-sm)' }} />
+      <div className="skeleton" style={{ width: '100%', height: '14px', marginBottom: '4px' }} />
+      <div className="skeleton" style={{ width: '90%', height: '14px' }} />
+    </div>
+  );
+}
+
+function TrendingSkeleton() {
+  return (
+    <div style={{ padding: 'var(--space-sm)', borderRadius: 'var(--radius-sm)', background: 'var(--bg-primary)' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
+        <div className="skeleton" style={{ width: '40px', height: '12px' }} />
+        <div className="skeleton" style={{ width: '60px', height: '12px' }} />
+      </div>
+      <div className="skeleton" style={{ width: '100%', height: '14px' }} />
+    </div>
+  );
+}
 
 export default function NewsPage() {
   const [newsList, setNewsList] = useState([]);
@@ -49,27 +77,29 @@ export default function NewsPage() {
   };
 
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: '1fr 300px', gap: 'var(--space-lg)', animation: 'fadeIn 300ms ease-out' }}>
+    <div className={styles.newsContainer}>
       
       {/* News Feed */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-lg)' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <div className={styles.newsFeed}>
+        <div className={styles.titleRow}>
           <h1 style={{ fontSize: 'var(--text-xl)', fontWeight: 700 }}>📰 Market News Feed</h1>
-          <button onClick={fetchNews} className="btn-secondary" style={{ padding: '6px 12px', fontSize: 'var(--text-xs)' }}>
-            🔄 Refresh
+          <button onClick={fetchNews} className="btn-outline" style={{ padding: '6px 12px', fontSize: 'var(--text-xs)' }} disabled={isLoading}>
+            {isLoading ? 'Loading...' : '🔄 Refresh'}
           </button>
         </div>
 
         {error && (
-          <div style={{ padding: 'var(--space-md)', background: 'rgba(248, 81, 73, 0.1)', border: '1px solid var(--loss-red)', color: 'var(--loss-red)', borderRadius: 'var(--radius-sm)' }}>
+          <div className={styles.errorMsg}>
             {error}
           </div>
         )}
 
         {isLoading && newsList.length === 0 ? (
-          <div style={{ padding: 'var(--space-xl)', textAlign: 'center', color: 'var(--text-secondary)' }}>
-            Loading market news...
-          </div>
+          <>
+            <NewsCardSkeleton />
+            <NewsCardSkeleton />
+            <NewsCardSkeleton />
+          </>
         ) : newsList.length === 0 ? (
           <div className="card" style={{ padding: 'var(--space-xl)', textAlign: 'center', color: 'var(--text-secondary)' }}>
             No news items generated yet.
@@ -78,37 +108,33 @@ export default function NewsPage() {
           newsList.map((news) => (
             <div 
               key={news.id} 
-              className="card" 
-              style={{ padding: 'var(--space-lg)', transition: 'border-color var(--transition-fast)' }}
+              className={`card ${styles.newsCard}`} 
             >
-              <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-md)', marginBottom: 'var(--space-sm)' }}>
+              <div className={styles.badgeRow}>
                 {news.symbol && (
-                  <span style={{
-                    padding: '2px 8px', borderRadius: 'var(--radius-sm)', fontWeight: 600, fontSize: 'var(--text-xs)',
-                    background: 'rgba(88, 166, 255, 0.12)', color: 'var(--accent-blue)',
-                  }}>
+                  <span className={styles.symbolBadge}>
                     {news.symbol}
                   </span>
                 )}
                 
                 {news.sentiment && (
-                  <span style={{
-                    padding: '2px 6px', borderRadius: 'var(--radius-sm)', fontSize: 'var(--text-xs)', fontWeight: 500,
-                    background: news.sentiment === 'POSITIVE' ? 'rgba(63, 185, 80, 0.12)' : news.sentiment === 'NEGATIVE' ? 'rgba(248, 81, 73, 0.12)' : 'rgba(255,255,255,0.06)',
-                    color: news.sentiment === 'POSITIVE' ? 'var(--profit-green)' : news.sentiment === 'NEGATIVE' ? 'var(--loss-red)' : 'var(--text-secondary)',
-                  }}>
+                  <span className={`${styles.sentimentBadge} ${
+                    news.sentiment === 'POSITIVE' ? styles.sentimentPositive
+                      : news.sentiment === 'NEGATIVE' ? styles.sentimentNegative
+                      : styles.sentimentNeutral
+                  }`}>
                     {news.sentiment === 'POSITIVE' ? '▲ Bullish' : news.sentiment === 'NEGATIVE' ? '▼ Bearish' : '● Neutral'}
                   </span>
                 )}
                 
-                <span style={{ marginLeft: 'auto', fontSize: 'var(--text-xs)', color: 'var(--text-muted)' }}>
+                <span className={styles.metaText}>
                   {news.source || 'Brokerage'} · {formatRelativeTime(news.publishedAt)}
                 </span>
               </div>
-              <h3 style={{ fontSize: 'var(--text-base)', fontWeight: 600, marginBottom: 'var(--space-xs)', lineHeight: 1.4 }}>
+              <h3 className={styles.headline}>
                 {news.headline}
               </h3>
-              <p style={{ color: 'var(--text-secondary)', fontSize: 'var(--text-sm)', lineHeight: 1.5 }}>
+              <p className={styles.summary}>
                 {news.summary}
               </p>
             </div>
@@ -117,33 +143,37 @@ export default function NewsPage() {
       </div>
 
       {/* Trending Bar */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-md)' }}>
-        <div className="card" style={{ padding: 'var(--space-md)' }}>
-          <h3 style={{ fontSize: 'var(--text-sm)', fontWeight: 600, color: 'var(--text-secondary)', textTransform: 'uppercase', marginBottom: 'var(--space-md)', paddingBottom: '4px', borderBottom: '1px solid var(--border)' }}>
+      <div className={styles.trendingBar}>
+        <div className={`card ${styles.trendingCard}`}>
+          <h3 className={styles.trendingTitle}>
             🔥 Trending Catalysts
           </h3>
           
-          {trending.length === 0 ? (
+          {isLoading && trending.length === 0 ? (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-sm)' }}>
+              <TrendingSkeleton />
+              <TrendingSkeleton />
+              <TrendingSkeleton />
+            </div>
+          ) : trending.length === 0 ? (
             <div style={{ padding: 'var(--space-md)', textAlign: 'center', color: 'var(--text-muted)', fontSize: 'var(--text-xs)' }}>
               No active trending events.
             </div>
           ) : (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-sm)' }}>
+            <div className={styles.trendingList}>
               {trending.map((t) => (
                 <div 
                   key={t.id}
+                  className={styles.trendingItem}
                   style={{
-                    padding: 'var(--space-sm)',
-                    borderRadius: 'var(--radius-sm)',
-                    background: 'var(--bg-primary)',
                     borderLeft: t.sentiment === 'POSITIVE' ? '3px solid var(--profit-green)' : t.sentiment === 'NEGATIVE' ? '3px solid var(--loss-red)' : '3px solid var(--border)',
                   }}
                 >
-                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 'var(--text-xs)', color: 'var(--text-muted)', marginBottom: '2px' }}>
-                    <span style={{ fontWeight: 600, color: 'var(--accent-blue)' }}>{t.symbol}</span>
+                  <div className={styles.trendingMeta}>
+                    <span className={styles.trendingSymbol}>{t.symbol}</span>
                     <span>{formatRelativeTime(t.publishedAt)}</span>
                   </div>
-                  <div style={{ fontSize: 'var(--text-xs)', color: 'var(--text-primary)', fontWeight: 500, lineHeight: 1.3 }}>
+                  <div className={styles.trendingHeadline}>
                     {t.headline}
                   </div>
                 </div>
