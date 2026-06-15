@@ -8,11 +8,11 @@ services:
     plan: free
     envVars:
       - key: SPRING_DATASOURCE_URL
-        value: jdbc:postgresql://${TRADINGCODB_HOST}:${TRADINGCODB_PORT}/${TRADINGCODB_DATABASE}?sslmode=require
+        sync: false # Paste: jdbc:postgresql://ep-bitter-night-a6qq1frm.us-west-2.aws.neon.tech/neondb?sslmode=require
       - key: SPRING_DATASOURCE_USERNAME
-        value: ${TRADINGCODB_USER}
+        sync: false # Paste: neondb_owner
       - key: SPRING_DATASOURCE_PASSWORD
-        value: ${TRADINGCODB_PASSWORD}
+        sync: false # Paste: npg_8qufKUTMI7lQ
       - key: SPRING_REDIS_HOST
         value: tradingco-redis
       - key: SPRING_REDIS_PORT
@@ -26,9 +26,3 @@ services:
     plan: free
     ipAllowList: [] # only allow internal access
 
-databases:
-  # PostgreSQL Database
-  - name: tradingcodb
-    plan: free
-    databaseName: tradingco
-    user: tradingco
