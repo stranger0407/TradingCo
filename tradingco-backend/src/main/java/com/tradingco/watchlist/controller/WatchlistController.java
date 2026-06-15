@@ -19,15 +19,16 @@ public class WatchlistController {
     private final WatchlistService watchlistService;
 
     @GetMapping
-    public ResponseEntity<List<Watchlist>> getWatchlists(@RequestParam UUID userId) {
-        return ResponseEntity.ok(watchlistService.getUserWatchlists(userId));
+    public ResponseEntity<List<Watchlist>> getWatchlists(@org.springframework.security.core.annotation.AuthenticationPrincipal com.tradingco.auth.model.User user) {
+        return ResponseEntity.ok(watchlistService.getUserWatchlists(user.getId()));
     }
 
     @PostMapping
-    public ResponseEntity<Watchlist> create(@RequestBody Map<String, String> body) {
-        UUID userId = UUID.fromString(body.get("userId"));
+    public ResponseEntity<Watchlist> create(
+            @org.springframework.security.core.annotation.AuthenticationPrincipal com.tradingco.auth.model.User user,
+            @RequestBody Map<String, String> body) {
         String name = body.getOrDefault("name", "Watchlist");
-        return ResponseEntity.status(HttpStatus.CREATED).body(watchlistService.create(userId, name));
+        return ResponseEntity.status(HttpStatus.CREATED).body(watchlistService.create(user.getId(), name));
     }
 
     @PostMapping("/{id}/symbols")

@@ -33,6 +33,7 @@ public class OrderExecutionService {
     private final AccountRepository accountRepository;
     private final QuoteRepository quoteRepository;
     private final SimpMessagingTemplate messagingTemplate;
+    private final com.tradingco.risk.service.RiskManagementService riskManagementService;
 
     private static final BigDecimal COMMISSION_PER_SHARE = new BigDecimal("0.005"); // $0.005/share
     private static final BigDecimal MIN_COMMISSION = new BigDecimal("1.00");
@@ -70,6 +71,13 @@ public class OrderExecutionService {
                 .stopLoss(stopLoss)
                 .takeProfit(takeProfit)
                 .build();
+
+        // Pre-trade risk check
+        com.tradingco.risk.dto.RiskCheckResult riskResult = riskManagementService.checkOrder(order, account);
+        if (riskResult.hasBlocks()) {
+            throw new OrderValidationException(String.join(". ", riskResult.blocks()));
+        }
+        order.setWarnings(riskResult.warnings());
 
         // Validate order
         validateOrder(order, account, quote);

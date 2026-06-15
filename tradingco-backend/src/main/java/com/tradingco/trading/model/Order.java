@@ -81,6 +81,9 @@ public class Order {
     @Column(name = "expires_at")
     private LocalDateTime expiresAt;
 
+    @Transient
+    private java.util.List<String> warnings;
+
     @PrePersist
     void prePersist() {
         createdAt = LocalDateTime.now();

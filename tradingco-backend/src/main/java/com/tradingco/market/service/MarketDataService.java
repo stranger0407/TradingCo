@@ -30,6 +30,8 @@ public class MarketDataService {
     private final CandleAggregator candleAggregator;
     private final QuoteRepository quoteRepository;
     private final SimpMessagingTemplate messagingTemplate;
+    private final com.tradingco.trading.service.OrderExecutionService orderExecutionService;
+    private final com.tradingco.alert.service.AlertService alertService;
 
     @PostConstruct
     public void init() {
@@ -74,6 +76,12 @@ public class MarketDataService {
                     .map(q -> new QuoteTick(q.getSymbol(), q.getLastPrice(), q.getBid(), q.getAsk(),
                             q.getChangeAmount(), q.getChangePercent(), q.getVolume(), q.getDayHigh(), q.getDayLow()))
                     .toList());
+
+            // Process pending limit/stop orders against the new prices
+            orderExecutionService.checkPendingOrders();
+
+            // Evaluate active price alerts
+            alertService.checkAlerts(updatedQuotes);
 
         } catch (Exception e) {
             log.error("Tick cycle error", e);

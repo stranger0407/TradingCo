@@ -13,6 +13,9 @@ export const marketApi = {
   getAsset: (symbol) =>
     api.get(`/api/v1/assets/${symbol}`),
 
+  getAssets: (params) =>
+    api.get('/api/v1/assets', { params }),
+
   searchAssets: (query) =>
     api.get('/api/v1/assets/search', { params: { q: query } }),
 };

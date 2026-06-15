@@ -1,5 +1,10 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect, useMemo } from 'react';
+import useAccountStore from '../../store/useAccountStore';
+import usePortfolioStore from '../../store/usePortfolioStore';
+import useOrderStore from '../../store/useOrderStore';
+import useMarketStore from '../../store/useMarketStore';
+import usePriceSubscription from '../../hooks/usePriceSubscription';
+import useWebSocket from '../../hooks/useWebSocket';
 import TradingChart from '../../components/trading/TradingChart/TradingChart';
 import OrderTicket from '../../components/trading/OrderTicket/OrderTicket';
 import WatchlistPanel from '../../components/trading/WatchlistPanel/WatchlistPanel';
@@ -8,54 +13,90 @@ import OrderHistoryTable from '../../components/trading/OrderHistoryTable/OrderH
 import { formatCurrency, formatPercent, getPnlClass } from '../../utils/formatters';
 import styles from './DashboardPage.module.css';
 
-const MOCK_INDICES = [
-  { name: 'S&P 500', symbol: 'SPY', price: 518.45, change: 2.25, changePct: 0.44 },
-  { name: 'NASDAQ', symbol: 'QQQ', price: 451.35, change: 2.55, changePct: 0.57 },
-  { name: 'DOW', symbol: 'DIA', price: 389.40, change: 1.90, changePct: 0.49 },
-  { name: 'Russell 2000', symbol: 'IWM', price: 207.68, change: 1.88, changePct: 0.91 },
-  { name: 'VIX', symbol: 'VIX', price: 14.32, change: -0.58, changePct: -3.89 },
-];
-
-const MOCK_POSITIONS = [
-  { symbol: 'AAPL', side: 'BUY', quantity: 100, avgCost: 185.20, currentPrice: 189.44, marketValue: 18944, unrealizedPnl: 424, unrealizedPnlPct: 2.29 },
-  { symbol: 'MSFT', side: 'BUY', quantity: 50, avgCost: 410.00, currentPrice: 417.35, marketValue: 20867.50, unrealizedPnl: 367.50, unrealizedPnlPct: 1.79 },
-  { symbol: 'TSLA', side: 'BUY', quantity: 30, avgCost: 255.00, currentPrice: 248.40, marketValue: 7452, unrealizedPnl: -198, unrealizedPnlPct: -2.59 },
-];
-
-const MOCK_ORDERS = [
-  { id: '1', symbol: 'AAPL', side: 'BUY', orderType: 'MARKET', quantity: 100, filledQuantity: 100, avgFillPrice: 185.20, status: 'FILLED', createdAt: '2024-01-15T10:30:00' },
-  { id: '2', symbol: 'MSFT', side: 'BUY', orderType: 'LIMIT', quantity: 50, filledQuantity: 50, limitPrice: 410.00, avgFillPrice: 410.00, status: 'FILLED', createdAt: '2024-01-15T11:15:00' },
-  { id: '3', symbol: 'TSLA', side: 'BUY', orderType: 'MARKET', quantity: 30, filledQuantity: 30, avgFillPrice: 255.00, status: 'FILLED', createdAt: '2024-01-16T09:45:00' },
-  { id: '4', symbol: 'NVDA', side: 'BUY', orderType: 'LIMIT', quantity: 40, filledQuantity: 0, limitPrice: 120.00, status: 'PENDING', createdAt: '2024-01-16T14:00:00' },
-];
+const INDEX_SYMBOLS = ['SPY', 'QQQ', 'DIA', 'IWM', 'VIX'];
 
 export default function DashboardPage() {
-  const navigate = useNavigate();
+  const wsHook = useWebSocket();
   const [activeSymbol, setActiveSymbol] = useState('AAPL');
   const [bottomTab, setBottomTab] = useState('positions');
+
+  // Stores
+  const activeAccount = useAccountStore((s) => s.activeAccount);
+  const fetchAccounts = useAccountStore((s) => s.fetchAccounts);
+  const portfolioSummary = usePortfolioStore((s) => s.summary);
+  const fetchPortfolio = usePortfolioStore((s) => s.fetchPortfolio);
+  const fetchPositions = usePortfolioStore((s) => s.fetchPositions);
+  const positions = usePortfolioStore((s) => s.positions);
+  const orders = useOrderStore((s) => s.orders);
+  const fetchOrders = useOrderStore((s) => s.fetchOrders);
+  
+  const quotes = useMarketStore((s) => s.quotes);
+
+  // Subscribe to live index price updates via WebSocket
+  usePriceSubscription(INDEX_SYMBOLS, wsHook);
+
+  // Subscribe to active symbol price updates
+  usePriceSubscription([activeSymbol], wsHook);
+
+  // Load account on mount
+  useEffect(() => {
+    fetchAccounts();
+  }, [fetchAccounts]);
+
+  // Load portfolio/orders when active account changes
+  useEffect(() => {
+    if (activeAccount?.id) {
+      fetchPortfolio(activeAccount.id);
+      fetchOrders(activeAccount.id);
+    }
+  }, [activeAccount?.id, fetchPortfolio, fetchOrders]);
+
+  // Watch/Subscribe private queues for order updates & portfolio updates
+  useEffect(() => {
+    if (!wsHook?.connected || !activeAccount?.id) return;
+
+    // Listen to order fill/status changes
+    const unsubOrders = wsHook.subscribe(`/topic/orders/${activeAccount.id}`, (order) => {
+      useOrderStore.getState().updateOrderStatus(order.id, order);
+      // Refresh portfolio and positions
+      fetchPortfolio(activeAccount.id);
+      fetchPositions(activeAccount.id);
+    });
+
+    return () => {
+      unsubOrders();
+    };
+  }, [wsHook?.connected, activeAccount?.id, fetchPortfolio, fetchPositions]);
 
   const handleSymbolSelect = (symbol) => {
     setActiveSymbol(symbol);
   };
 
-  const handleOrderSubmit = (orderData) => {
-    console.log('Order submitted:', orderData);
-    // Will connect to API in production
-  };
+  const selectedSymbolPrice = useMemo(() => {
+    return quotes[activeSymbol]?.last_price || 189.44;
+  }, [activeSymbol, quotes]);
 
   return (
     <div className={styles.dashboard}>
       {/* Market Indices Strip */}
       <div className={styles.indicesStrip}>
-        {MOCK_INDICES.map((idx) => (
-          <div key={idx.symbol} className={styles.indexCard} onClick={() => handleSymbolSelect(idx.symbol)}>
-            <h4>{idx.name}</h4>
-            <div className={styles.indexPrice}>{formatCurrency(idx.price)}</div>
-            <div className={`${styles.indexChange} ${getPnlClass(idx.change)}`}>
-              {idx.change >= 0 ? '▲' : '▼'} {formatPercent(Math.abs(idx.changePct))}
+        {INDEX_SYMBOLS.map((sym) => {
+          const quote = quotes[sym] || {};
+          const price = quote.last_price || 0;
+          const changePct = quote.change_percent || 0;
+          
+          return (
+            <div key={sym} className={styles.indexCard} onClick={() => handleSymbolSelect(sym)}>
+              <h4>{sym}</h4>
+              <div className={styles.indexPrice}>{price > 0 ? formatCurrency(price) : 'Loading...'}</div>
+              {price > 0 && (
+                <div className={`${styles.indexChange} ${getPnlClass(changePct)}`}>
+                  {changePct >= 0 ? '▲' : '▼'} {formatPercent(Math.abs(changePct))}
+                </div>
+              )}
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       {/* Watchlist Panel */}
@@ -74,7 +115,7 @@ export default function DashboardPage() {
           <h3>📋 Order Ticket</h3>
         </div>
         <div className={styles.panelBody}>
-          <OrderTicket symbol={activeSymbol} lastPrice={189.44} onSubmit={handleOrderSubmit} />
+          <OrderTicket symbol={activeSymbol} lastPrice={selectedSymbolPrice} />
         </div>
       </div>
 
@@ -88,26 +129,29 @@ export default function DashboardPage() {
                   key={tab}
                   onClick={() => setBottomTab(tab)}
                   style={{
-                    background: 'none', border: 'none', cursor: 'pointer',
+                    background: 'none',
+                    border: 'none',
+                    cursor: 'pointer',
                     color: bottomTab === tab ? 'var(--accent-blue)' : 'var(--text-secondary)',
                     fontWeight: bottomTab === tab ? 600 : 400,
-                    fontSize: 'var(--text-sm)', textTransform: 'uppercase',
+                    fontSize: 'var(--text-sm)',
+                    textTransform: 'uppercase',
                     letterSpacing: '0.05em',
                     borderBottom: bottomTab === tab ? '2px solid var(--accent-blue)' : '2px solid transparent',
                     paddingBottom: '4px',
                   }}
                 >
-                  {tab === 'positions' ? `💼 Positions (${MOCK_POSITIONS.length})`
-                    : tab === 'orders' ? `📋 Orders (${MOCK_ORDERS.length})`
-                    : '📊 Trades'}
+                  {tab === 'positions' ? `💼 Positions (${positions.length})`
+                    : tab === 'orders' ? `📋 Active Orders (${orders.filter(o => o.status === 'PENDING' || o.status === 'ACCEPTED').length})`
+                    : '📊 Order History'}
                 </button>
               ))}
             </div>
           </div>
-          <div className={styles.panelBody}>
-            {bottomTab === 'positions' && <PositionsTable positions={MOCK_POSITIONS} />}
-            {bottomTab === 'orders' && <OrderHistoryTable orders={MOCK_ORDERS} />}
-            {bottomTab === 'trades' && <div className={styles.placeholder}>No closed trades yet</div>}
+          <div className={styles.panelBody} style={{ overflowY: 'auto', maxHeight: '250px' }}>
+            {bottomTab === 'positions' && <PositionsTable positions={positions} />}
+            {bottomTab === 'orders' && <OrderHistoryTable orders={orders.filter(o => o.status === 'PENDING' || o.status === 'ACCEPTED')} />}
+            {bottomTab === 'trades' && <OrderHistoryTable orders={orders} />}
           </div>
         </div>
       </div>
