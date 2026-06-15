@@ -1,0 +1,34 @@
+services:
+  # Spring Boot Backend Web Service
+  - type: web
+    name: tradingco-backend
+    env: docker
+    dockerContext: ./tradingco-backend
+    dockerfilePath: ./tradingco-backend/Dockerfile
+    plan: free
+    envVars:
+      - key: SPRING_DATASOURCE_URL
+        value: jdbc:postgresql://${TRADINGCODB_HOST}:${TRADINGCODB_PORT}/${TRADINGCODB_DATABASE}?sslmode=require
+      - key: SPRING_DATASOURCE_USERNAME
+        value: ${TRADINGCODB_USER}
+      - key: SPRING_DATASOURCE_PASSWORD
+        value: ${TRADINGCODB_PASSWORD}
+      - key: SPRING_REDIS_HOST
+        value: tradingco-redis
+      - key: SPRING_REDIS_PORT
+        value: "6379"
+      - key: JWT_SECRET
+        generateValue: true
+
+  # Redis Service
+  - type: redis
+    name: tradingco-redis
+    plan: free
+    ipAllowList: [] # only allow internal access
+
+databases:
+  # PostgreSQL Database
+  - name: tradingcodb
+    plan: free
+    databaseName: tradingco
+    user: tradingco
