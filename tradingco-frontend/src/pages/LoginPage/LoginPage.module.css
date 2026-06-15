@@ -5,12 +5,14 @@
   justify-content: center;
   background: linear-gradient(135deg, #0D1117 0%, #161B22 50%, #1C2333 100%);
   position: relative;
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: var(--space-2xl) var(--space-md);
 }
 
 .page::before {
   content: '';
-  position: absolute;
+  position: fixed;
   top: -50%;
   left: -50%;
   width: 200%;
