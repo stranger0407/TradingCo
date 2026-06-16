@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Newspaper, RotateCw, Flame, ChevronUp, ChevronDown, Minus } from 'lucide-react';
 import { newsApi } from '../../api/newsApi';
 import styles from './NewsPage.module.css';
 
@@ -82,9 +83,11 @@ export default function NewsPage() {
       {/* News Feed */}
       <div className={styles.newsFeed}>
         <div className={styles.titleRow}>
-          <h1 style={{ fontSize: 'var(--text-xl)', fontWeight: 700 }}>📰 Market News Feed</h1>
-          <button onClick={fetchNews} className="btn-outline" style={{ padding: '6px 12px', fontSize: 'var(--text-xs)' }} disabled={isLoading}>
-            {isLoading ? 'Loading...' : '🔄 Refresh'}
+          <h1 style={{ fontSize: 'var(--text-xl)', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <Newspaper size={20} style={{ color: 'var(--accent-blue)' }} /> Market News Feed
+          </h1>
+          <button onClick={fetchNews} className="btn-outline" style={{ padding: '6px 12px', fontSize: 'var(--text-xs)', display: 'flex', alignItems: 'center', gap: '6px' }} disabled={isLoading}>
+            <RotateCw size={12} /> {isLoading ? 'Loading...' : 'Refresh'}
           </button>
         </div>
 
@@ -122,8 +125,20 @@ export default function NewsPage() {
                     news.sentiment === 'POSITIVE' ? styles.sentimentPositive
                       : news.sentiment === 'NEGATIVE' ? styles.sentimentNegative
                       : styles.sentimentNeutral
-                  }`}>
-                    {news.sentiment === 'POSITIVE' ? '▲ Bullish' : news.sentiment === 'NEGATIVE' ? '▼ Bearish' : '● Neutral'}
+                  }`} style={{ display: 'inline-flex', alignItems: 'center' }}>
+                    {news.sentiment === 'POSITIVE' ? (
+                      <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                        <ChevronUp size={14} /> Bullish
+                      </span>
+                    ) : news.sentiment === 'NEGATIVE' ? (
+                      <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                        <ChevronDown size={14} /> Bearish
+                      </span>
+                    ) : (
+                      <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                        <Minus size={14} /> Neutral
+                      </span>
+                    )}
                   </span>
                 )}
                 
@@ -145,8 +160,8 @@ export default function NewsPage() {
       {/* Trending Bar */}
       <div className={styles.trendingBar}>
         <div className={`card ${styles.trendingCard}`}>
-          <h3 className={styles.trendingTitle}>
-            🔥 Trending Catalysts
+          <h3 className={styles.trendingTitle} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <Flame size={18} style={{ color: 'var(--warning-amber)' }} /> Trending Catalysts
           </h3>
           
           {isLoading && trending.length === 0 ? (

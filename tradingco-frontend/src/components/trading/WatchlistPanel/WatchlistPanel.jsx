@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Eye, Trash2 } from 'lucide-react';
 import useWatchlistStore from '../../../store/useWatchlistStore';
 import useMarketStore from '../../../store/useMarketStore';
 import { marketApi } from '../../../api/marketApi';
@@ -99,7 +100,9 @@ export default function WatchlistPanel({ activeSymbol, onSelect }) {
       {/* Header with Switcher / Create List Button */}
       <div className={styles.header}>
         <div style={{ display: 'flex', gap: 'var(--space-xs)', alignItems: 'center' }}>
-          <span className={styles.title}>👁️ Watchlists</span>
+          <span className={styles.title} style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+            <Eye size={18} style={{ color: 'var(--accent-blue)' }} /> Watchlists
+          </span>
           {watchlists.length > 1 && (
             <select
               value={activeWatchlistId || ''}
@@ -258,14 +261,15 @@ export default function WatchlistPanel({ activeSymbol, onSelect }) {
                       border: 'none',
                       color: 'var(--text-muted)',
                       cursor: 'pointer',
-                      fontSize: 'var(--text-sm)',
+                      display: 'inline-flex',
+                      alignItems: 'center',
                       padding: 0,
                     }}
                     onMouseEnter={(e) => e.target.style.color = 'var(--loss-red)'}
                     onMouseLeave={(e) => e.target.style.color = 'var(--text-muted)'}
                     title="Remove from Watchlist"
                   >
-                    🗑️
+                    <Trash2 size={14} />
                   </button>
                 </div>
               </div>

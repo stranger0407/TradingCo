@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Sliders, RotateCw, TrendingUp, TrendingDown, Flame } from 'lucide-react';
 import { screenerApi } from '../../api/screenerApi';
 import { formatCurrency, formatPercent, formatVolume, getPnlClass } from '../../utils/formatters';
 import styles from './ScreenerPage.module.css';
@@ -161,9 +162,11 @@ export default function ScreenerPage() {
   return (
     <div className={styles.screenerContainer}>
       <div className={styles.titleRow}>
-        <h1 style={{ fontSize: 'var(--text-xl)', fontWeight: 700 }}>🔍 Market Screener</h1>
-        <button onClick={fetchData} className="btn-outline" style={{ padding: '6px 12px', fontSize: 'var(--text-xs)' }} disabled={isLoading}>
-          {isLoading ? 'Loading...' : '🔄 Refresh'}
+        <h1 style={{ fontSize: 'var(--text-xl)', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <Sliders size={20} style={{ color: 'var(--accent-blue)' }} /> Market Screener
+        </h1>
+        <button onClick={fetchData} className="btn-outline" style={{ padding: '6px 12px', fontSize: 'var(--text-xs)', display: 'flex', alignItems: 'center', gap: '6px' }} disabled={isLoading}>
+          <RotateCw size={12} /> {isLoading ? 'Loading...' : 'Refresh'}
         </button>
       </div>
 
@@ -175,14 +178,14 @@ export default function ScreenerPage() {
 
       <div className={styles.grid}>
         {[
-          { key: 'gainers', icon: '🟢', title: 'Top Gainers', data: gainers },
-          { key: 'losers', icon: '🔴', title: 'Top Losers', data: losers },
-          { key: 'active', icon: '🔥', title: 'Most Active', data: active },
-        ].map(({ key, icon, title, data }) => (
+          { key: 'gainers', icon: TrendingUp, color: 'var(--profit-green)', title: 'Top Gainers', data: gainers },
+          { key: 'losers', icon: TrendingDown, color: 'var(--loss-red)', title: 'Top Losers', data: losers },
+          { key: 'active', icon: Flame, color: 'var(--warning-amber)', title: 'Most Active', data: active },
+        ].map(({ key, icon: Icon, color, title, data }) => (
           <div key={key} className="card">
             <div className={styles.cardHeader}>
-              <h3 className={styles.cardTitle}>
-                {icon} {title}
+              <h3 className={styles.cardTitle} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <Icon size={18} style={{ color }} /> {title}
               </h3>
             </div>
             <ScreenerTable items={data} isLoading={isLoading} />

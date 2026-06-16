@@ -25,7 +25,11 @@
   cursor: pointer;
 }
 
-.brandIcon { font-size: 1.5rem; }
+.brandIcon { 
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
 
 .nav {
   flex: 1;
@@ -75,9 +79,10 @@
 }
 
 .navIcon {
-  font-size: 1.2rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   min-width: 24px;
-  text-align: center;
 }
 
 .navLabel {

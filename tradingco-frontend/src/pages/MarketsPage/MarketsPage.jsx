@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { ArrowLeftRight } from 'lucide-react';
 import { marketApi } from '../../api/marketApi';
 import TradingChart from '../../components/trading/TradingChart/TradingChart';
 import OrderTicket from '../../components/trading/OrderTicket/OrderTicket';
@@ -168,8 +169,8 @@ export default function MarketsPage() {
       {/* Order Ticket Card */}
       <div className={`card ${styles.orderTicketCard}`}>
         <div style={{ padding: 'var(--space-md) var(--space-lg)', borderBottom: '1px solid var(--border)' }}>
-          <h3 style={{ fontSize: 'var(--text-sm)', fontWeight: 600, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-            📋 Trade {selectedSymbol}
+          <h3 style={{ fontSize: 'var(--text-sm)', fontWeight: 600, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <ArrowLeftRight size={16} style={{ color: 'var(--accent-blue)' }} /> Trade {selectedSymbol}
           </h3>
         </div>
         <OrderTicket 

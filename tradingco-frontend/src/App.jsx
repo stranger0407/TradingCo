@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
+import { Calendar as CalendarIcon } from 'lucide-react';
 import useAuthStore from './store/useAuthStore';
 import ProtectedRoute from './routes/ProtectedRoute';
 import AppLayout from './components/layout/AppLayout/AppLayout';
@@ -16,13 +17,13 @@ import AlertsPage from './pages/AlertsPage/AlertsPage';
 import SettingsPage from './pages/SettingsPage/SettingsPage';
 
 // Placeholder for pages still in development
-function PlaceholderPage({ title, icon }) {
+function PlaceholderPage({ title, icon: Icon }) {
   return (
     <div style={{
       display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
       height: '60vh', gap: '16px', animation: 'fadeIn 300ms ease-out'
     }}>
-      <span style={{ fontSize: '3rem' }}>{icon}</span>
+      {Icon && <Icon size={48} style={{ color: 'var(--accent-blue)' }} />}
       <h1 style={{ fontSize: '1.5rem', fontWeight: 600 }}>{title}</h1>
       <p style={{ color: 'var(--text-secondary)' }}>Coming soon</p>
     </div>
@@ -55,7 +56,7 @@ export default function App() {
         <Route path="/screener" element={<ScreenerPage />} />
         <Route path="/news" element={<NewsPage />} />
         <Route path="/journal" element={<JournalPage />} />
-        <Route path="/calendar" element={<PlaceholderPage title="Economic Calendar" icon="📅" />} />
+        <Route path="/calendar" element={<PlaceholderPage title="Economic Calendar" icon={CalendarIcon} />} />
         <Route path="/alerts" element={<AlertsPage />} />
         <Route path="/settings" element={<SettingsPage />} />
       </Route>

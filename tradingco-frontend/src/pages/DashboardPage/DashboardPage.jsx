@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
+import { ClipboardList, Briefcase, History } from 'lucide-react';
 import useAccountStore from '../../store/useAccountStore';
 import usePortfolioStore from '../../store/usePortfolioStore';
 import useOrderStore from '../../store/useOrderStore';
@@ -112,7 +113,9 @@ export default function DashboardPage() {
       {/* Order Ticket */}
       <div className={`${styles.panel} ${styles.orderPanel}`}>
         <div className={styles.panelHeader}>
-          <h3>📋 Order Ticket</h3>
+          <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <ClipboardList size={18} style={{ color: 'var(--accent-blue)' }} /> Order Ticket
+          </h3>
         </div>
         <div className={styles.panelBody}>
           <OrderTicket symbol={activeSymbol} lastPrice={selectedSymbolPrice} />
@@ -139,11 +142,27 @@ export default function DashboardPage() {
                     letterSpacing: '0.05em',
                     borderBottom: bottomTab === tab ? '2px solid var(--accent-blue)' : '2px solid transparent',
                     paddingBottom: '4px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '6px'
                   }}
                 >
-                  {tab === 'positions' ? `💼 Positions (${positions.length})`
-                    : tab === 'orders' ? `📋 Active Orders (${orders.filter(o => o.status === 'PENDING' || o.status === 'ACCEPTED').length})`
-                    : '📊 Order History'}
+                  {tab === 'positions' ? (
+                    <>
+                      <Briefcase size={16} />
+                      <span>Positions ({positions.length})</span>
+                    </>
+                  ) : tab === 'orders' ? (
+                    <>
+                      <ClipboardList size={16} />
+                      <span>Active Orders ({orders.filter(o => o.status === 'PENDING' || o.status === 'ACCEPTED').length})</span>
+                    </>
+                  ) : (
+                    <>
+                      <History size={16} />
+                      <span>Order History</span>
+                    </>
+                  )}
                 </button>
               ))}
             </div>

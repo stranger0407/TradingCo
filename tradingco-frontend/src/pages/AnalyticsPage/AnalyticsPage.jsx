@@ -1,14 +1,25 @@
 import { useState, useEffect, useRef } from 'react';
 import { createChart, AreaSeries } from 'lightweight-charts';
+import { 
+  BarChart3, 
+  DollarSign, 
+  Target, 
+  Scale, 
+  LineChart, 
+  TrendingDown, 
+  RefreshCw, 
+  Trophy, 
+  AlertTriangle 
+} from 'lucide-react';
 import useAccountStore from '../../store/useAccountStore';
 import { analyticsApi } from '../../api/analyticsApi';
 import { formatCurrency, formatPercent, getPnlClass } from '../../utils/formatters';
 
-function StatCard({ label, value, color, icon }) {
+function StatCard({ label, value, color, icon: Icon }) {
   return (
     <div className="card" style={{ padding: 'var(--space-lg)' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-sm)', marginBottom: 'var(--space-sm)' }}>
-        <span>{icon}</span>
+        {Icon && <Icon size={16} style={{ color: color || 'var(--text-muted)' }} />}
         <span style={{ fontSize: 'var(--text-xs)', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{label}</span>
       </div>
       <div style={{ fontSize: 'var(--text-xl)', fontWeight: 700, fontFamily: 'var(--font-mono)', color: color || 'var(--text-primary)' }}>{value}</div>
@@ -121,7 +132,9 @@ export default function AnalyticsPage() {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-lg)', animation: 'fadeIn 300ms ease-out' }}>
-      <h1 style={{ fontSize: 'var(--text-xl)', fontWeight: 700 }}>📉 Performance Analytics</h1>
+      <h1 style={{ fontSize: 'var(--text-xl)', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <BarChart3 size={20} style={{ color: 'var(--accent-blue)' }} /> Performance Analytics
+      </h1>
 
       {isLoading && !summary ? (
         <div style={{ padding: 'var(--space-xl)', textAlign: 'center', color: 'var(--text-secondary)' }}>
@@ -135,14 +148,14 @@ export default function AnalyticsPage() {
         <>
           {/* Key Metrics Grid */}
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 'var(--space-md)' }}>
-            <StatCard label="Total P&L" value={`${Number(m.totalPnl) >= 0 ? '+' : ''}${formatCurrency(m.totalPnl)}`} color={Number(m.totalPnl) >= 0 ? 'var(--profit-green)' : 'var(--loss-red)'} icon="💰" />
-            <StatCard label="Win Rate" value={`${m.winRate}%`} color={m.winRate >= 50 ? 'var(--profit-green)' : 'var(--loss-red)'} icon="🎯" />
-            <StatCard label="Profit Factor" value={Number(m.profitFactor).toFixed(2)} color={Number(m.profitFactor) >= 1 ? 'var(--profit-green)' : 'var(--loss-red)'} icon="⚖️" />
-            <StatCard label="Sharpe Ratio" value={Number(m.sharpeRatio).toFixed(2)} color={Number(m.sharpeRatio) >= 1 ? 'var(--profit-green)' : 'var(--warning-amber)'} icon="📊" />
-            <StatCard label="Max Drawdown" value={formatCurrency(m.maxDrawdown)} color="var(--loss-red)" icon="📉" />
-            <StatCard label="Total Trades" value={m.totalTrades} icon="🔄" />
-            <StatCard label="Best Trade" value={`+${formatCurrency(m.bestTrade)}`} color="var(--profit-green)" icon="🏆" />
-            <StatCard label="Worst Trade" value={formatCurrency(m.worstTrade)} color="var(--loss-red)" icon="⚠️" />
+            <StatCard label="Total P&L" value={`${Number(m.totalPnl) >= 0 ? '+' : ''}${formatCurrency(m.totalPnl)}`} color={Number(m.totalPnl) >= 0 ? 'var(--profit-green)' : 'var(--loss-red)'} icon={DollarSign} />
+            <StatCard label="Win Rate" value={`${m.winRate}%`} color={m.winRate >= 50 ? 'var(--profit-green)' : 'var(--loss-red)'} icon={Target} />
+            <StatCard label="Profit Factor" value={Number(m.profitFactor).toFixed(2)} color={Number(m.profitFactor) >= 1 ? 'var(--profit-green)' : 'var(--loss-red)'} icon={Scale} />
+            <StatCard label="Sharpe Ratio" value={Number(m.sharpeRatio).toFixed(2)} color={Number(m.sharpeRatio) >= 1 ? 'var(--profit-green)' : 'var(--warning-amber)'} icon={LineChart} />
+            <StatCard label="Max Drawdown" value={formatCurrency(m.maxDrawdown)} color="var(--loss-red)" icon={TrendingDown} />
+            <StatCard label="Total Trades" value={m.totalTrades} icon={RefreshCw} />
+            <StatCard label="Best Trade" value={`+${formatCurrency(m.bestTrade)}`} color="var(--profit-green)" icon={Trophy} />
+            <StatCard label="Worst Trade" value={formatCurrency(m.worstTrade)} color="var(--loss-red)" icon={AlertTriangle} />
           </div>
 
           {/* Breakdown */}

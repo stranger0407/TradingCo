@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { User, Wallet, PlusCircle } from 'lucide-react';
 import useAuthStore from '../../store/useAuthStore';
 import useAccountStore from '../../store/useAccountStore';
 import { authApi } from '../../api/authApi';
@@ -84,8 +85,8 @@ export default function SettingsPage() {
       
       {/* Profile Settings */}
       <div className="card" style={{ padding: 'var(--space-lg)' }}>
-        <h3 style={{ fontSize: 'var(--text-sm)', fontWeight: 600, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 'var(--space-lg)', paddingBottom: '4px', borderBottom: '1px solid var(--border)' }}>
-          👤 Profile Settings
+        <h3 style={{ fontSize: 'var(--text-sm)', fontWeight: 600, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 'var(--space-lg)', paddingBottom: '4px', borderBottom: '1px solid var(--border)', display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <User size={18} style={{ color: 'var(--accent-blue)' }} /> Profile Settings
         </h3>
 
         {profileSuccess && (
@@ -154,8 +155,8 @@ export default function SettingsPage() {
         
         {/* Accounts List */}
         <div className="card" style={{ padding: 'var(--space-lg)' }}>
-          <h3 style={{ fontSize: 'var(--text-sm)', fontWeight: 600, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 'var(--space-lg)', paddingBottom: '4px', borderBottom: '1px solid var(--border)' }}>
-            💼 Paper Trading Accounts
+          <h3 style={{ fontSize: 'var(--text-sm)', fontWeight: 600, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 'var(--space-lg)', paddingBottom: '4px', borderBottom: '1px solid var(--border)', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <Wallet size={18} style={{ color: 'var(--accent-blue)' }} /> Paper Trading Accounts
           </h3>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-sm)' }}>
@@ -204,8 +205,8 @@ export default function SettingsPage() {
 
         {/* Create Account Form */}
         <div className="card" style={{ padding: 'var(--space-lg)' }}>
-          <h3 style={{ fontSize: 'var(--text-sm)', fontWeight: 600, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 'var(--space-lg)', paddingBottom: '4px', borderBottom: '1px solid var(--border)' }}>
-            ➕ Create New Trading Account
+          <h3 style={{ fontSize: 'var(--text-sm)', fontWeight: 600, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 'var(--space-lg)', paddingBottom: '4px', borderBottom: '1px solid var(--border)', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <PlusCircle size={18} style={{ color: 'var(--accent-blue)' }} /> Create New Trading Account
           </h3>
 
           <form onSubmit={handleCreateAccountSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-md)' }}>

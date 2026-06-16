@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { TrendingUp } from 'lucide-react';
 import useAuthStore from '../../store/useAuthStore';
 import { BALANCE_OPTIONS, EXPERIENCE_LEVELS } from '../../utils/constants';
 import { getPasswordStrength } from '../../utils/validators';
@@ -35,7 +36,9 @@ export default function RegisterPage() {
     <div className={styles.page}>
       <div className={styles.card}>
         <div className={styles.logo}>
-          <div className={styles.logoIcon}>📈</div>
+          <div className={styles.logoIcon}>
+            <TrendingUp size={32} strokeWidth={2.5} style={{ color: 'var(--accent-blue)' }} />
+          </div>
           <div className={styles.logoText}>Trading<span>Co</span></div>
           <div className={styles.subtitle}>Create your trading account</div>
         </div>

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { BookOpen, Tag, Brain, Star, Pencil, Trash2 } from 'lucide-react';
 import useAccountStore from '../../store/useAccountStore';
 import { journalApi } from '../../api/journalApi';
 import styles from './JournalPage.module.css';
@@ -99,7 +100,9 @@ export default function JournalPage() {
       {/* Entries List */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-md)' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <h1 style={{ fontSize: 'var(--text-xl)', fontWeight: 700 }}>📓 Trade Journal</h1>
+          <h1 style={{ fontSize: 'var(--text-xl)', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <BookOpen size={20} style={{ color: 'var(--accent-blue)' }} /> Trade Journal
+          </h1>
           {!showAddForm && (
             <button 
               onClick={() => setShowAddForm(true)} 
@@ -143,21 +146,32 @@ export default function JournalPage() {
                       {entry.symbol ? entry.symbol.toUpperCase() : 'GENERAL LOG'}
                     </span>
                     {entry.strategyTag && (
-                      <span style={{ background: 'var(--bg-tertiary)', padding: '2px 8px', borderRadius: 'var(--radius-sm)', fontSize: 'var(--text-xs)', color: 'var(--text-secondary)', fontWeight: 500 }}>
-                        🏷️ {entry.strategyTag}
+                      <span style={{ background: 'var(--bg-tertiary)', padding: '2px 8px', borderRadius: 'var(--radius-sm)', fontSize: 'var(--text-xs)', color: 'var(--text-secondary)', fontWeight: 500, display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                        <Tag size={12} /> {entry.strategyTag}
                       </span>
                     )}
-                    <span style={{ fontSize: 'var(--text-xs)', padding: '2px 6px', borderRadius: 'var(--radius-sm)', background: 'rgba(88,166,255,0.1)', color: 'var(--accent-blue)' }}>
-                      🎭 {entry.emotion}
+                    <span style={{ fontSize: 'var(--text-xs)', padding: '2px 6px', borderRadius: 'var(--radius-sm)', background: 'rgba(88,166,255,0.1)', color: 'var(--accent-blue)', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                      <Brain size={12} /> {entry.emotion}
                     </span>
-                    <span style={{ fontSize: 'var(--text-xs)' }}>
-                      {'⭐'.repeat(entry.tradeRating || 5)}
+                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '2px' }}>
+                      {Array.from({ length: 5 }).map((_, idx) => (
+                        <Star 
+                          key={idx} 
+                          size={12} 
+                          fill={idx < (entry.tradeRating || 5) ? 'var(--accent-yellow)' : 'none'} 
+                          stroke={idx < (entry.tradeRating || 5) ? 'var(--accent-yellow)' : 'var(--text-muted)'} 
+                        />
+                      ))}
                     </span>
                   </div>
                   
-                  <div style={{ display: 'flex', gap: 'var(--space-sm)' }}>
-                    <button onClick={() => handleEdit(entry)} style={{ background: 'none', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer', fontSize: 'var(--text-sm)' }} title="Edit">✏️</button>
-                    <button onClick={() => handleDelete(entry.id)} style={{ background: 'none', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer', fontSize: 'var(--text-sm)' }} title="Delete">🗑️</button>
+                  <div style={{ display: 'flex', gap: 'var(--space-sm)', alignItems: 'center' }}>
+                    <button onClick={() => handleEdit(entry)} style={{ background: 'none', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer', display: 'inline-flex', alignItems: 'center' }} title="Edit">
+                      <Pencil size={14} />
+                    </button>
+                    <button onClick={() => handleDelete(entry.id)} style={{ background: 'none', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer', display: 'inline-flex', alignItems: 'center' }} title="Delete">
+                      <Trash2 size={14} />
+                    </button>
                   </div>
                 </div>
 
@@ -183,8 +197,16 @@ export default function JournalPage() {
       {/* Add / Edit Form Sidebar */}
       {showAddForm && (
         <div className="card" style={{ padding: 'var(--space-lg)', alignSelf: 'start' }}>
-          <h3 style={{ fontSize: 'var(--text-md)', fontWeight: 600, color: 'var(--text-primary)', marginBottom: 'var(--space-lg)' }}>
-            {editingId ? '✏️ Edit Log Entry' : '📓 Add Log Entry'}
+          <h3 style={{ fontSize: 'var(--text-md)', fontWeight: 600, color: 'var(--text-primary)', marginBottom: 'var(--space-lg)', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            {editingId ? (
+              <>
+                <Pencil size={18} style={{ color: 'var(--accent-blue)' }} /> Edit Log Entry
+              </>
+            ) : (
+              <>
+                <BookOpen size={18} style={{ color: 'var(--accent-blue)' }} /> Add Log Entry
+              </>
+            )}
           </h3>
 
           <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-md)' }}>
@@ -231,7 +253,7 @@ export default function JournalPage() {
                 style={{ padding: '8px', background: 'var(--bg-tertiary)', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', color: 'var(--text-primary)', outline: 'none' }}
               >
                 {[1, 2, 3, 4, 5].map(r => (
-                  <option key={r} value={r}>{'⭐'.repeat(r)}</option>
+                  <option key={r} value={r}>{r} {r === 1 ? 'Star' : 'Stars'}</option>
                 ))}
               </select>
             </div>

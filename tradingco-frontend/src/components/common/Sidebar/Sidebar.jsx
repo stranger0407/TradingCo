@@ -1,19 +1,33 @@
 import { useLocation, useNavigate } from 'react-router-dom';
+import { 
+  LayoutDashboard, 
+  LineChart, 
+  Eye, 
+  Briefcase, 
+  ClipboardList, 
+  Newspaper, 
+  BarChart3, 
+  Sliders, 
+  Calendar, 
+  BookOpen, 
+  Settings, 
+  TrendingUp 
+} from 'lucide-react';
 import useSettingsStore from '../../../store/useSettingsStore';
 import styles from './Sidebar.module.css';
 
 const NAV_ITEMS = [
-  { icon: '📊', label: 'Dashboard', path: '/dashboard' },
-  { icon: '📈', label: 'Markets', path: '/markets' },
-  { icon: '👁️', label: 'Watchlists', path: '/watchlists' },
-  { icon: '💼', label: 'Portfolio', path: '/portfolio' },
-  { icon: '📋', label: 'Orders', path: '/orders' },
-  { icon: '📰', label: 'News', path: '/news' },
-  { icon: '📉', label: 'Analytics', path: '/analytics' },
-  { icon: '🔍', label: 'Screener', path: '/screener' },
-  { icon: '📅', label: 'Calendar', path: '/calendar' },
-  { icon: '📓', label: 'Journal', path: '/journal' },
-  { icon: '⚙️', label: 'Settings', path: '/settings' },
+  { icon: LayoutDashboard, label: 'Dashboard', path: '/dashboard' },
+  { icon: LineChart, label: 'Markets', path: '/markets' },
+  { icon: Eye, label: 'Watchlists', path: '/watchlists' },
+  { icon: Briefcase, label: 'Portfolio', path: '/portfolio' },
+  { icon: ClipboardList, label: 'Orders', path: '/orders' },
+  { icon: Newspaper, label: 'News', path: '/news' },
+  { icon: BarChart3, label: 'Analytics', path: '/analytics' },
+  { icon: Sliders, label: 'Screener', path: '/screener' },
+  { icon: Calendar, label: 'Calendar', path: '/calendar' },
+  { icon: BookOpen, label: 'Journal', path: '/journal' },
+  { icon: Settings, label: 'Settings', path: '/settings' },
 ];
 
 export default function Sidebar() {
@@ -33,17 +47,21 @@ export default function Sidebar() {
   return (
     <aside className={`${styles.sidebar} ${expanded ? styles.expanded : ''}`}>
       <div className={styles.brandArea} onClick={toggleSidebar}>
-        <span className={styles.brandIcon}>📈</span>
+        <span className={styles.brandIcon}>
+          <TrendingUp size={22} strokeWidth={2.5} style={{ color: 'var(--accent-blue)' }} />
+        </span>
       </div>
       <nav className={styles.nav}>
-        {NAV_ITEMS.map(({ icon, label, path }) => (
+        {NAV_ITEMS.map(({ icon: Icon, label, path }) => (
           <button
             key={path}
             className={`${styles.navItem} ${location.pathname.startsWith(path) ? styles.active : ''}`}
             onClick={() => handleNavClick(path)}
             title={!expanded ? label : undefined}
           >
-            <span className={styles.navIcon}>{icon}</span>
+            <span className={styles.navIcon}>
+              <Icon size={18} strokeWidth={2} />
+            </span>
             <span className={styles.navLabel}>{label}</span>
           </button>
         ))}

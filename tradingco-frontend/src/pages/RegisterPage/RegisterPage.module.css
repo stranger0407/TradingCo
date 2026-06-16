@@ -45,9 +45,10 @@
 }
 
 .logoIcon {
-  font-size: 2.2rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   margin-bottom: var(--space-xs);
-  display: inline-block;
   animation: float 3s ease-in-out infinite;
 }
 

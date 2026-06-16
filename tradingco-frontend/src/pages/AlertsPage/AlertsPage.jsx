@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Bell, Pause, Play, Trash2 } from 'lucide-react';
 import { alertApi } from '../../api/alertApi';
 import { formatCurrency } from '../../utils/formatters';
 
@@ -71,7 +72,9 @@ export default function AlertsPage() {
       
       {/* Alerts List */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-md)' }}>
-        <h1 style={{ fontSize: 'var(--text-xl)', fontWeight: 700 }}>🔔 Price Alerts</h1>
+        <h1 style={{ fontSize: 'var(--text-xl)', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <Bell size={20} style={{ color: 'var(--accent-blue)' }} /> Price Alerts
+        </h1>
 
         {error && (
           <div style={{ padding: 'var(--space-md)', background: 'rgba(248, 81, 73, 0.1)', border: '1px solid var(--loss-red)', color: 'var(--loss-red)', borderRadius: 'var(--radius-sm)' }}>
@@ -122,22 +125,22 @@ export default function AlertsPage() {
                       {a.triggeredAt ? new Date(a.triggeredAt).toLocaleString() : '—'}
                     </td>
                     <td style={{ textAlign: 'right', padding: 'var(--space-sm) var(--space-md)' }}>
-                      <div style={{ display: 'flex', gap: 'var(--space-sm)', justifyContent: 'flex-end' }}>
+                      <div style={{ display: 'flex', gap: 'var(--space-sm)', justifyContent: 'flex-end', alignItems: 'center' }}>
                         {!a.isTriggered && (
                           <button 
                             onClick={() => handleToggle(a.id, a.isActive)} 
-                            style={{ background: 'none', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer', fontSize: 'var(--text-sm)' }}
+                            style={{ background: 'none', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer', display: 'inline-flex', alignItems: 'center' }}
                             title={a.isActive ? 'Deactivate' : 'Activate'}
                           >
-                            {a.isActive ? '⏸️' : '▶️'}
+                            {a.isActive ? <Pause size={14} /> : <Play size={14} />}
                           </button>
                         )}
                         <button 
                           onClick={() => handleDelete(a.id)} 
-                          style={{ background: 'none', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer', fontSize: 'var(--text-sm)' }}
+                          style={{ background: 'none', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer', display: 'inline-flex', alignItems: 'center' }}
                           title="Delete"
                         >
-                          🗑️
+                          <Trash2 size={14} />
                         </button>
                       </div>
                     </td>
@@ -149,10 +152,9 @@ export default function AlertsPage() {
         )}
       </div>
 
-      {/* Create Alert Panel */}
       <div className="card" style={{ padding: 'var(--space-lg)', alignSelf: 'start' }}>
-        <h3 style={{ fontSize: 'var(--text-sm)', fontWeight: 600, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 'var(--space-lg)', paddingBottom: '4px', borderBottom: '1px solid var(--border)' }}>
-          🔔 New Price Alert
+        <h3 style={{ fontSize: 'var(--text-sm)', fontWeight: 600, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 'var(--space-lg)', paddingBottom: '4px', borderBottom: '1px solid var(--border)', display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <Bell size={16} style={{ color: 'var(--accent-blue)' }} /> New Price Alert
         </h3>
 
         <form onSubmit={handleCreateAlert} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-md)' }}>

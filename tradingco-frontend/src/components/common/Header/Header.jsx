@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Menu, TrendingUp, Search, Bell } from 'lucide-react';
 import useAuthStore from '../../../store/useAuthStore';
 import useSettingsStore from '../../../store/useSettingsStore';
 import styles from './Header.module.css';
@@ -26,14 +27,17 @@ export default function Header() {
   return (
     <header className={styles.header}>
       <button className={styles.menuBtn} onClick={toggleSidebar} aria-label="Toggle Sidebar">
-        ☰
+        <Menu size={20} />
       </button>
       <div className={styles.logo}>
-        📈 Trading<span>Co</span>
+        <TrendingUp size={20} strokeWidth={2.5} style={{ color: 'var(--accent-blue)' }} />
+        Trading<span>Co</span>
       </div>
 
       <form className={styles.searchWrapper} onSubmit={handleSearch}>
-        <span className={styles.searchIcon}>🔍</span>
+        <span className={styles.searchIcon}>
+          <Search size={16} />
+        </span>
         <input
           className={styles.searchInput}
           type="text"
@@ -49,7 +53,9 @@ export default function Header() {
           <span>CLOSED</span>
         </div>
 
-        <button className={styles.iconBtn} title="Notifications">🔔</button>
+        <button className={styles.iconBtn} title="Notifications">
+          <Bell size={18} />
+        </button>
 
         <div className={styles.avatar} onClick={logout} title="Logout">
           {initials}
