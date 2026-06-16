@@ -339,3 +339,35 @@ td.mono { font-family: var(--font-mono); }
     --header-height: 48px;
   }
 }
+
+/* === Responsive Grid Layouts === */
+.grid-responsive-2col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-lg);
+}
+
+.grid-responsive-sidebar {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: var(--space-lg);
+}
+
+.grid-responsive-journal {
+  display: grid;
+  grid-template-columns: 1fr 360px;
+  gap: var(--space-lg);
+}
+
+@media (max-width: 992px) {
+  .grid-responsive-2col {
+    grid-template-columns: 1fr;
+  }
+  .grid-responsive-sidebar {
+    grid-template-columns: 1fr;
+  }
+  .grid-responsive-journal {
+    grid-template-columns: 1fr;
+  }
+}
+

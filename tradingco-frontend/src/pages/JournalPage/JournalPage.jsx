@@ -94,7 +94,7 @@ export default function JournalPage() {
   }
 
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: showAddForm ? '1fr 360px' : '1fr', gap: 'var(--space-lg)', animation: 'fadeIn 300ms ease-out' }}>
+    <div className={showAddForm ? "grid-responsive-journal" : ""} style={{ animation: 'fadeIn 300ms ease-out' }}>
       
       {/* Entries List */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-md)' }}>

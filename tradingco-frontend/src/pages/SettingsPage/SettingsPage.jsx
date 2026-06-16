@@ -80,7 +80,7 @@ export default function SettingsPage() {
   };
 
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-lg)', animation: 'fadeIn 300ms ease-out' }}>
+    <div className="grid-responsive-2col" style={{ animation: 'fadeIn 300ms ease-out' }}>
       
       {/* Profile Settings */}
       <div className="card" style={{ padding: 'var(--space-lg)' }}>

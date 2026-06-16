@@ -67,7 +67,7 @@ export default function AlertsPage() {
   };
 
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: '1fr 340px', gap: 'var(--space-lg)', animation: 'fadeIn 300ms ease-out' }}>
+    <div className="grid-responsive-sidebar" style={{ animation: 'fadeIn 300ms ease-out' }}>
       
       {/* Alerts List */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-md)' }}>

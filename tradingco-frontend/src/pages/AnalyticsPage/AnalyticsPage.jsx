@@ -146,7 +146,7 @@ export default function AnalyticsPage() {
           </div>
 
           {/* Breakdown */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-lg)' }}>
+          <div className="grid-responsive-2col">
             <div className="card" style={{ padding: 'var(--space-lg)' }}>
               <h3 style={{ fontSize: 'var(--text-sm)', fontWeight: 600, color: 'var(--text-secondary)', textTransform: 'uppercase', marginBottom: 'var(--space-lg)' }}>Win/Loss Breakdown</h3>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-md)' }}>

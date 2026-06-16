@@ -57,3 +57,10 @@
   padding: var(--space-3xl);
   color: var(--text-muted);
 }
+
+.tableWrapper {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+

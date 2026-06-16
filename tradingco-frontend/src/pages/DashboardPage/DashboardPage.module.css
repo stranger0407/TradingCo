@@ -80,7 +80,10 @@
   min-height: 400px;
 }
 
-.watchlistPanel { grid-row: 2; }
+.watchlistPanel {
+  grid-row: 2;
+  overflow: visible !important;
+}
 .orderPanel { grid-row: 2; }
 
 .bottomArea {
