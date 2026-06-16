@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import useAuthStore from '../../store/useAuthStore';
 import { BALANCE_OPTIONS, EXPERIENCE_LEVELS } from '../../utils/constants';
 import { getPasswordStrength } from '../../utils/validators';
-import styles from '../LoginPage/LoginPage.module.css';
+import styles from './RegisterPage.module.css';
 
 export default function RegisterPage() {
   const [form, setForm] = useState({
@@ -45,41 +45,98 @@ export default function RegisterPage() {
         <form className={styles.form} onSubmit={handleSubmit}>
           <div className={styles.field}>
             <label className={styles.label}>Display Name</label>
-            <input type="text" placeholder="Your name" value={form.displayName} onChange={handleChange('displayName')} required />
+            <input 
+              className={styles.inputField}
+              type="text" 
+              placeholder="Your name" 
+              value={form.displayName} 
+              onChange={handleChange('displayName')} 
+              required 
+            />
           </div>
+          
           <div className={styles.field}>
             <label className={styles.label}>Email</label>
-            <input type="email" placeholder="you@example.com" value={form.email} onChange={handleChange('email')} required />
+            <input 
+              className={styles.inputField}
+              type="email" 
+              placeholder="you@example.com" 
+              value={form.email} 
+              onChange={handleChange('email')} 
+              required 
+            />
           </div>
-          <div className={styles.field}>
-            <label className={styles.label}>Password</label>
-            <input type="password" placeholder="Min 8 characters" value={form.password} onChange={handleChange('password')} required minLength={8} />
-            {form.password && (
-              <div style={{ fontSize: 'var(--text-xs)', color: strength.color, marginTop: '2px' }}>
-                Strength: {strength.label}
-              </div>
-            )}
+
+          <div className={styles.row}>
+            <div className={styles.field}>
+              <label className={styles.label}>Password</label>
+              <input 
+                className={styles.inputField}
+                type="password" 
+                placeholder="Min 8 characters" 
+                value={form.password} 
+                onChange={handleChange('password')} 
+                required 
+                minLength={8} 
+              />
+              {form.password && (
+                <div className={styles.strengthIndicator} style={{ color: strength.color }}>
+                  Strength: {strength.label}
+                </div>
+              )}
+            </div>
+
+            <div className={styles.field}>
+              <label className={styles.label}>Confirm Password</label>
+              <input 
+                className={styles.inputField}
+                type="password" 
+                placeholder="Repeat password" 
+                value={form.confirmPassword} 
+                onChange={handleChange('confirmPassword')} 
+                required 
+              />
+              {form.confirmPassword && form.password !== form.confirmPassword && (
+                <div className={styles.strengthIndicator} style={{ color: 'var(--loss-red)' }}>
+                  Passwords don't match
+                </div>
+              )}
+            </div>
           </div>
-          <div className={styles.field}>
-            <label className={styles.label}>Confirm Password</label>
-            <input type="password" placeholder="Repeat password" value={form.confirmPassword} onChange={handleChange('confirmPassword')} required />
-            {form.confirmPassword && form.password !== form.confirmPassword && (
-              <div style={{ fontSize: 'var(--text-xs)', color: 'var(--loss-red)' }}>Passwords don't match</div>
-            )}
+
+          <div className={styles.row}>
+            <div className={styles.field}>
+              <label className={styles.label}>Experience Level</label>
+              <select 
+                className={styles.inputField}
+                value={form.experienceLevel} 
+                onChange={handleChange('experienceLevel')}
+              >
+                {EXPERIENCE_LEVELS.map((l) => (
+                  <option key={l.value} value={l.value}>{l.label}</option>
+                ))}
+              </select>
+            </div>
+
+            <div className={styles.field}>
+              <label className={styles.label}>Starting Capital</label>
+              <select 
+                className={styles.inputField}
+                value={form.initialBalance} 
+                onChange={handleChange('initialBalance')}
+              >
+                {BALANCE_OPTIONS.map((o) => (
+                  <option key={o.value} value={o.value}>{o.label}</option>
+                ))}
+              </select>
+            </div>
           </div>
-          <div className={styles.field}>
-            <label className={styles.label}>Experience Level</label>
-            <select value={form.experienceLevel} onChange={handleChange('experienceLevel')}>
-              {EXPERIENCE_LEVELS.map((l) => (<option key={l.value} value={l.value}>{l.label}</option>))}
-            </select>
-          </div>
-          <div className={styles.field}>
-            <label className={styles.label}>Starting Capital</label>
-            <select value={form.initialBalance} onChange={handleChange('initialBalance')}>
-              {BALANCE_OPTIONS.map((o) => (<option key={o.value} value={o.value}>{o.label}</option>))}
-            </select>
-          </div>
-          <button type="submit" className={styles.submitBtn} disabled={isLoading || form.password !== form.confirmPassword}>
+
+          <button 
+            type="submit" 
+            className={styles.submitBtn} 
+            disabled={isLoading || form.password !== form.confirmPassword}
+          >
             {isLoading ? 'Creating account...' : 'Create Account'}
           </button>
         </form>
